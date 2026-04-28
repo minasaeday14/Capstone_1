@@ -219,5 +219,5 @@ SELECT county, SUM(total::numeric)::money AS total_county_sales
 FROM public.sales
 WHERE vendor ILIKE '%sazerac%'
 GROUP BY county
-ORDER BY total_county_sales DESC;
+ORDER BY total_county_sales DESC;     -- Polk generates the most revenue
 
