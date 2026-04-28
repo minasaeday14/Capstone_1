@@ -154,6 +154,31 @@ GROUP BY store
 HAVING SUM(total:: numeric) > 2000
 ORDER BY total_sales_revenue ASC
 
+-- 9. Find all sales records where the category_ name is either your chosen category or a closely related competitor category (e.g.,'VODKA 80 PROOF' vs 'IMPORTED VODKA').
+(Threat: Comparing performance against direct substitutes).
+
+-- -- Since my assigned focus is Sazerac as a vendor, this question is interpreted by comparing one Sazerac category,
+-- CANADIAN WHISKIES, against a closely related competitor category, BLENDED WHISKIES.
+
+SELECT DISTINCT category_name
+FROM public.sales
+WHERE category_name ILIKE '%WHISK%'
+ORDER BY category_name
+-- the query below Sales records for CANADIAN WHISKIES and BLENDED WHISKIES
+
+SELECT date,store,vendor,description, category_name, total
+FROM public.sales                                                     
+WHERE category_name IN ('CANADIAN WHISKIES', 'BLENDED WHISKIES')
+-- BELOW is Performance comparison between CANADIAN WHISKIES and BLENDED WHISKIES
+SELECT 
+	category_name,
+	SUM(total::numeric)::money AS total_sales_revenue, 
+	COUNT(*) AS transaction_count
+FROM public.sales
+WHERE category_name IN ('CANADIAN WHISKIES', 'BLENDED WHISKIES')
+GROUP BY category_name
+ORDER BY total_sales_revenue DESC
+
 
 
 
