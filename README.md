@@ -191,5 +191,16 @@ WHERE vendor ILIKE '%sazerac%'
 ORDER BY state_btl_cost ASC
 
 
+-- 11. Write a query that displays each store's total sales for your [Category/Vendor]
+-- -- along with the store's name and address from the stores
+--table.(Strength: Mapping your physical sales footprint).
+
+SELECT s.store, st.name, st.store_address, SUM(s.total) AS total_sales_revenue
+FROM public.sales s
+JOIN public. stores st
+	ON s.store = st.store
+WHERE s.vendor ILIKE '%sazerac%' 
+GROUP BY s.store, st.name, st.store_address
+ORDER BY total_sales_revenue DESC
 
 
