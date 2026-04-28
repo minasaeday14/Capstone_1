@@ -203,4 +203,21 @@ WHERE s.vendor ILIKE '%sazerac%'
 GROUP BY s.store, st.name, st.store_address
 ORDER BY total_sales_revenue DESC
 
+-- 12. For each sale in your [Category], display the transaction date, total amount,
+-- -- and the population of the county where the sale occurred by joining with counties (Opportunity: Correlating sales volume with population density).
+
+SELECT s.date,s.total,c.county,c.population
+FROM public.sales s
+JOIN public.counties c
+    ON s.county = c.county
+WHERE s.category_name = 'CANADIAN WHISKIES';
+
+-- 13. Write a query that shows total sales for your [Category/Vendor] by county.
+-- -- Which county generates the most revenue for you (Strength: Identifying your geographic stronghold).
+
+SELECT county, SUM(total::numeric)::money AS total_county_sales
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%'
+GROUP BY county
+ORDER BY total_county_sales DESC;
 
