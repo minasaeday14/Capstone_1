@@ -180,5 +180,16 @@ GROUP BY category_name
 ORDER BY total_sales_revenue DESC
 
 
+-- -- 10. List all transactions where the state bottle cost was between $10 and $20 for
+-- your [Category/Vendor].
+-- (Opportunity: Analyzing performance in the "mid-tier" price bracket).
+
+SELECT date, store, description, state_btl_cost, vendor, total
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%' 
+	AND state_btl_cost::numeric BETWEEN 10 AND 20
+ORDER BY state_btl_cost ASC
+
+
 
 
