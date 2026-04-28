@@ -92,7 +92,68 @@ SELECT SUM(total :: numeric) AS total_sales_revenue, AVG(btl_price :: numeric ) 
 FROM public.sales
 WHERE vendor ILIKE '%sazerac%'
  -- result  37321641.83	 and 12.3367978852909464
+
  
+-- 5. How many transactions were recorded for each specific item description within your
+-- -- chosen [Category]? Which specific product is the most frequently purchased?
+(Strength: Identifying your "hero" product).
+
+SELECT COUNT(*) AS transaction_count, description
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%'
+GROUP BY description 
+ORDER BY transaction_count DESC
+
+-- 6. Which store generated the highest total revenue for your [Category/Vendor]?
+-- -- Which generated the lowest (but still greater than zero)?
+(Strength vs. Weakness: Identifying your best and worst retail partners).
+
+SELECT *
+FROM public.stores
+LIMIT 10;
+
+
+SELECT s.store,st.name, SUM(total :: numeric) AS total_store_revenue
+FROM public.sales s
+JOIN public.stores ST
+	ON s.store = st.store
+WHERE vendor ILIKE '%sazerac%'
+GROUP BY s.store, st.name
+HAVING SUM (s.total::numeric) > 0
+ORDER BY total_store_revenue ASC    -- lowest = 22.32
+
+-- 7. What is the total revenue for every vendor within your chosen [Category],
+-- -- sorted from highest to lowest?
+(Threat: Identifying your top competitors in that space).
+
+-- Since my assigned focus is a vendor (Sazerac) rather than a category, this question is interpreted
+-- as a competitor analysis within the category space where Sazerac products appear.
+
+SELECT DISTINCT category_name
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%'    -- in this query I am trying to find the category space where Sazerac appears
+ORDER BY category_name
+
+-- Since Sazerac appears across many categories, I selected CANADIAN WHISKIES as the competitive category for vendor comparison
+--  Question What is the total revenue for every vendor within CANADIAN WHISKIES, sorted from highest to lowest?
+
+SELECT vendor, SUM (total::numeric) AS total_vendor_revenue
+FROM public.sales                             
+WHERE category_name = 'CANADIAN WHISKIES'    -- This query compares total revenue for all vendors in the CANADIAN WHISKIES
+GROUP BY vendor
+ORDER BY total_vendor_revenue DESC
+
+-- 8. Which stores had total sales revenue for your [Category/Vendor] exceeding $2,000?
+-- -- (Hint: Use HAVING to filter aggregated store totals).
+(Strength: Pinpointing high-performing retail locations).
+
+SELECT store, SUM(total:: numeric)::money AS total_sales_revenue
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%'
+GROUP BY store
+HAVING SUM(total:: numeric) > 2000
+ORDER BY total_sales_revenue ASC
+
 
 
 
