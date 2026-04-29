@@ -244,3 +244,41 @@ WHERE c.population > 10000
 	AND s.county IS NULL
 ORDER BY c.population DESC                            -- This query returned no rows, which suggests there are no counties
 -- with a population over 10,000 that had zero recorded Sazerac sales in this dataset.
+
+-- 16. Display total revenue for your [Category/Vendor] grouped by the store status
+-- (from stores table). Are active stores ('A') performing significantly better than others?
+-- (Threat: Assessing the risk of sales tied to inactive or closed locations).
+
+
+SELECT st.store_status, SUM(s.total::numeric)::money AS total_revenue
+FROM public.stores st
+JOIN public.sales s
+	ON st.store = s.store
+WHERE s.vendor ILIKE '%sazerac%'    --- The reults show only actice stores ('A'), suggesting that all recorded Sazerac sales in this dataset came from actice stores 
+GROUP BY store_status
+ORDER BY SUM(s.total::numeric) DESC
+
+
+-- Subqueries
+-- 17. Using a subquery, find all transactions for your [Category/Vendor] from stores
+-- -- located in a specific high-growth city (e.g.,(Opportunity: Drilling down into urban market performance).'Des Moines') found in the stores
+
+SELECT store, name, store_address, address_info
+FROM public.stores     -- Address was giving me null values
+LIMIT 20
+
+SELECT *
+FROM public.stores
+WHERE address_info IS NOT NULL
+LIMIT 15
+
+SELECT date, store, description, total::money
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%'
+	AND store IN (
+	SELECT store
+	FROM public.stores
+	WHERE store_address ILIKE '%Des Moines%'
+	)
+ORDER BY total DESC
+
