@@ -315,5 +315,20 @@ WHERE item_no IN (
 	LIMIT 5
 )	
 
+-- 20. Write a query using a subquery to find all sales records for your [Category]
+-- -- from stores that have an 'A' (Active) status in the stores
+table.
+_
+(Strength: Filtering for reliable, ongoing revenue streams).
+-- Since my assigned focus is Sazerac, which is a vendor rather than a category,this category-based question is interpreted using CANADIAN WHISKIES.
+
+SELECT date, store, description, category_name,total
+FROM public.sales
+WHERE category_name = 'CANADIAN WHISKIES'
+	AND store IN (
+		SELECT store
+		FROM public.stores
+		WHERE store_status = 'A'
+	)
 
 
