@@ -221,3 +221,14 @@ WHERE vendor ILIKE '%sazerac%'
 GROUP BY county
 ORDER BY total_county_sales DESC;     -- Polk generates the most revenue
 
+
+-- 14. Join the sales_table and products_table to show total revenue for your [Vendor]
+-- -- alongside the proof and pack size of the items.(Strength: Determining if higher proof or larger packs drive more revenue).
+
+SELECT p.item_description, p.proof, p.pack, SUM(s.total::numeric)::money AS total_revenue
+FROM public.sales s
+JOIN public.products p
+	ON s.item = p.item_no
+WHERE s.vendor ILIKE '%sazerac%'
+GROUP BY p.item_description, p.proof, p.pack
+ORDER BY SUM(s.total::numeric) DESC
