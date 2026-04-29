@@ -232,3 +232,15 @@ JOIN public.products p
 WHERE s.vendor ILIKE '%sazerac%'
 GROUP BY p.item_description, p.proof, p.pack
 ORDER BY SUM(s.total::numeric) DESC
+-- 15. Are there any counties in the counties_table that have a population over 10,000-- but zero sales for your [Category/Vendor]?-- 
+--(Opportunity: Identifying untapped markets).
+
+SELECT c.population, c.county
+FROM public.counties c
+LEFT JOIN public.sales s
+	ON c.county = s.county
+	AND s.vendor ILIKE '%sazerac%'   
+WHERE c.population > 10000
+	AND s.county IS NULL
+ORDER BY c.population DESC                            -- This query returned no rows, which suggests there are no counties
+-- with a population over 10,000 that had zero recorded Sazerac sales in this dataset.
