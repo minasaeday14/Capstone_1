@@ -302,5 +302,18 @@ HAVING SUM(total::numeric) > (
 ORDER BY total_store_revenue DESC
 
 
+-- 19. Find the top 5 highest-grossing items for your [Vendor], then use a subquery
+-- -- to look up their full details (like casecost and proof) from the products table._(Strength: Deep-dive into the specs of your most profitable inventory)
+SELECT item_no, item_description, case_cost,proof, pack
+FROM public.products
+WHERE item_no IN (
+	SELECT item 
+	FROM public.sales
+	WHERE vendor ILIKE '%sazerac%'
+	GROUP BY item, description
+	ORDER BY SUM(total::numeric)::money DESC
+	LIMIT 5
+)	
+
 
 
