@@ -282,3 +282,25 @@ WHERE vendor ILIKE '%sazerac%'
 	)
 ORDER BY total DESC
 
+-- 18. Which stores had total sales for your [Category/Vendor] that were above the
+-- -- average store revenue for that same group? (Hint: Use a subquery for the average).
+(Strength: Identifying stores that are over-performing
+
+SELECT store, SUM(total::numeric)::moneY AS total_store_revenue
+FROM public.sales
+WHERE vendor ILIKE '%sazerac%'
+GROUP BY store
+HAVING SUM(total::numeric) > (
+	SELECT AVG(store_total)
+	FROM (
+		SELECT SUM(total::numeric) AS store_total
+		FROM public.sales
+		WHERE vendor ILIKE '%sazerac%'
+		GROUP BY store
+	) AS store_totals
+) 
+ORDER BY total_store_revenue DESC
+
+
+
+
